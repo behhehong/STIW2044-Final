@@ -38,8 +38,6 @@ class _RegistrationState extends State<Registration> {
 
   var _pickedImage;
 
-  CroppedFile? _croppedFile;
-
   @override
   void initState() {
     super.initState();
@@ -98,7 +96,7 @@ class _RegistrationState extends State<Registration> {
                   ),
                   width: double.infinity,
                   child: Padding(
-                    padding: const EdgeInsets.fromLTRB(20, 0, 20, 20),
+                    padding: const EdgeInsets.fromLTRB(20, 10, 20, 20),
                     child: Column(
                       children: [
                         Center(
@@ -375,43 +373,16 @@ class _RegistrationState extends State<Registration> {
   }
 
   _loadPicker(ImageSource source) async {
-    final picker = ImagePicker();
-    final picked = await picker.pickImage(source: source);
-    if (picked != null) {
-      _cropImage(picked);
-    }
-    Navigator.pop(context);
-  }
-
-  Future<void> _cropImage(picked) async {
-    final croppedImage = await ImageCropper().cropImage(
-      sourcePath: picked.path,
-      aspectRatioPresets: [
-        CropAspectRatioPreset.square,
-        CropAspectRatioPreset.ratio3x2,
-        CropAspectRatioPreset.original,
-        CropAspectRatioPreset.ratio4x3,
-        CropAspectRatioPreset.ratio16x9
-      ],
-      uiSettings: [
-        AndroidUiSettings(
-            toolbarTitle: 'Crop Image',
-            toolbarColor: const Color.fromARGB(255, 9, 56, 95),
-            statusBarColor: const Color.fromARGB(255, 9, 56, 95),
-            toolbarWidgetColor: Colors.white,
-            initAspectRatio: CropAspectRatioPreset.original,
-            lockAspectRatio: false),
-        IOSUiSettings(
-          title: 'Crop Image',
-        ),
-      ],
-    );
-
-    if (croppedImage != null) {
+    final _picker = ImagePicker();
+    final XFile? picked = await _picker.pickImage(source: source);
+    final File? imagefile = File(picked!.path);
+    if (imagefile != null) {
       setState(() {
-        _pickedImage = croppedImage;
+        _pickedImage = imagefile;
       });
     }
+    // _cropImage();
+    Navigator.pop(context);
   }
 
   // Future<void> _cropImage() async {
