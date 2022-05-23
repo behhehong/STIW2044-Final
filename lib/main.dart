@@ -13,6 +13,6 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const MaterialApp(
-        debugShowCheckedModeBanner: false, title: 'Final yp', home: Registration());
+        debugShowCheckedModeBanner: false, title: 'Final yp', home: SplashScreen());
   }
 }

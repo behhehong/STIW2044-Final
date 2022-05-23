@@ -20,13 +20,13 @@ class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
+  bool _isObscure = true;
 
   @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
         body: Stack(
-          // alignment: Alignment.center,
           children: [
             LayoutBuilder(
               builder: (BuildContext context, BoxConstraints constraints) {
@@ -79,11 +79,11 @@ class _LoginScreenState extends State<LoginScreen> {
                 children: [
                   aboveText('Email address'),
                   const SizedBox(height: 5),
-                  textFormField(emailController),
+                  textFormField(emailController, false),
                   const SizedBox(height: 30),
                   aboveText('Password'),
                   const SizedBox(height: 5),
-                  textFormField(passwordController),
+                  textFormField(passwordController, _isObscure),
                   const SizedBox(height: 30),
                   SizedBox(
                     height: 50,
@@ -160,8 +160,9 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
-  TextFormField textFormField(controller) {
+  TextFormField textFormField(controller, obscure) {
     return TextFormField(
+      obscureText: obscure,
       controller: controller,
       decoration: InputDecoration(
         contentPadding: const EdgeInsets.fromLTRB(0, 15, 0, 0),
@@ -176,26 +177,28 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   void _userLogin() {
-    String _email = emailController.text;
-    String _password = passwordController.text;
-    if (_formKey.currentState!.validate()) {
-      _formKey.currentState!.save();
-      http.post(
-          Uri.parse("https://hubbuddies.com/271513/myTutor/php/loginuser.php"),
-          body: {"email": _email, "password": _password}).then((response) {
-        var data = jsonDecode(response.body);
-        if (response.statusCode == 200 && data['status'] == 'Success') {
-          Navigator.pushReplacement(
-              context, MaterialPageRoute(builder: (content) => HomePage()));
-        } else {
-          Fluttertoast.showToast(
-              msg: "Failed",
-              toastLength: Toast.LENGTH_SHORT,
-              gravity: ToastGravity.BOTTOM,
-              timeInSecForIosWeb: 1,
-              fontSize: 16.0);
-        }
-      });
-    }
+    String _email = emailController.text.toString();
+    String _password = passwordController.text.toString();
+    http.post(
+        Uri.parse("https://hubbuddies.com/271513/myTutor/php/loginuser.php"),
+        body: {
+          "email": _email,
+          "password": _password,
+        }).then((response) {
+      print(response.body);
+      if (response.body == "failed") {
+        Fluttertoast.showToast(
+            msg: "Login Failed",
+            toastLength: Toast.LENGTH_SHORT,
+            gravity: ToastGravity.BOTTOM,
+            timeInSecForIosWeb: 1,
+            backgroundColor: Colors.red[200],
+            textColor: Colors.white,
+            fontSize: 16.0);
+      } else {
+        Navigator.pushReplacement(
+            context, MaterialPageRoute(builder: (content) => const HomePage()));
+      }
+    });
   }
 }
