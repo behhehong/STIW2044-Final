@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:image_cropper/image_cropper.dart';
@@ -115,16 +116,16 @@ class _RegistrationState extends State<Registration> {
                         ),
                         const SizedBox(height: 10),
                         inputText(focusNode1, "Name", Icons.person, false,
-                            usernameController),
+                            usernameController, TextInputType.text),
                         const SizedBox(height: 20),
                         inputText(focusNode2, "Phone Number",
-                            Icons.phone_android, false, phoneNumController),
+                            Icons.phone_android, false, phoneNumController, TextInputType.phone),
                         const SizedBox(height: 20),
                         inputText(focusNode3, "Home Address", Icons.home, false,
-                            addressController),
+                            addressController, TextInputType.text),
                         const SizedBox(height: 20),
                         inputText(focusNode4, "Email", Icons.email, false,
-                            emailController),
+                            emailController, TextInputType.emailAddress),
                         const SizedBox(height: 20),
                         TextFormField(
                           keyboardType: TextInputType.text,
@@ -234,9 +235,9 @@ class _RegistrationState extends State<Registration> {
     );
   }
 
-  TextField inputText(focusNode, text, icons, state, controller) {
+  TextField inputText(focusNode, text, icons, state, controller, keyboard) {
     return TextField(
-      keyboardType: TextInputType.text,
+      keyboardType: keyboard,
       obscureText: state,
       controller: controller,
       cursorColor: Colors.grey,
