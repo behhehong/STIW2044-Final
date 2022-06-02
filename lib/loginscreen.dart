@@ -28,17 +28,23 @@ class _LoginScreenState extends State<LoginScreen> {
       child: Scaffold(
         body: Stack(
           children: [
-            LayoutBuilder(
-              builder: (BuildContext context, BoxConstraints constraints) {
-                return Container(
-                  decoration: const BoxDecoration(
-                    image: DecorationImage(
-                        image: AssetImage('assets/images/background.jpg'),
-                        fit: BoxFit.cover),
-                  ),
-                  height: constraints.maxHeight / 2.2,
-                );
-              },
+            Positioned(
+              top: 0,
+              left: 0,
+              right: 0,
+              bottom: 400,
+              child: LayoutBuilder(
+                builder: (BuildContext context, BoxConstraints constraints) {
+                  return Container(
+                    decoration: const BoxDecoration(
+                      image: DecorationImage(
+                          image: AssetImage('assets/images/background.jpg'),
+                          fit: BoxFit.cover),
+                    ),
+                    height: constraints.maxHeight / 2.2,
+                  );
+                },
+              ),
             ),
             Padding(
               padding: const EdgeInsets.fromLTRB(30, 40, 0, 0),
@@ -139,7 +145,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                 ],
               ),
-            )
+            ),
           ],
         ),
       ),
