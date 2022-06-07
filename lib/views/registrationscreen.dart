@@ -1,11 +1,12 @@
 import 'dart:io';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:image_cropper/image_cropper.dart';
-import 'package:my_tutor/loginscreen.dart';
+import 'package:my_tutor/views/loginscreen.dart';
 import 'package:http/http.dart' as http;
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:email_validator/email_validator.dart';
@@ -37,7 +38,8 @@ class _RegistrationState extends State<Registration> {
   bool _isObscure1 = true;
   bool _isObscure2 = true;
 
-  var _pickedImage;
+  var _imageFile;
+  String pathAsset = 'assets/images/profilepic.jpg';
 
   @override
   void initState() {
@@ -60,6 +62,18 @@ class _RegistrationState extends State<Registration> {
     focusNode6.addListener(() {
       setState(() {});
     });
+  }
+
+  @override
+  void dispose() {
+    print("dispose was called");
+    usernameController.dispose();
+    phoneNumController.dispose();
+    addressController.dispose();
+    emailController.dispose();
+    passwordController.dispose();
+    cpasswordController.dispose();
+    super.dispose();
   }
 
   @override
@@ -101,25 +115,43 @@ class _RegistrationState extends State<Registration> {
                     child: Column(
                       children: [
                         Center(
-                          child: GestureDetector(
-                            onTap: () => {_showPickOptionsDialog()},
-                            child: CircleAvatar(
-                              radius: 70,
-                              child: _pickedImage == null
-                                  ? Image.asset('assets/images/profilepic.jpg')
-                                  : null,
-                              backgroundImage: _pickedImage != null
-                                  ? FileImage(_pickedImage)
-                                  : null,
-                            ),
+                          child: Stack(
+                            children: <Widget>[
+                              CircleAvatar(
+                                backgroundColor: Colors.transparent,
+                                radius: 70,
+                                child: ClipRRect(
+                                  borderRadius: BorderRadius.circular(100),
+                                  child: _imageFile == null
+                                      ? Image.asset(pathAsset)
+                                      : Image.file(_imageFile),
+                                ),
+                              ),
+                              Positioned(
+                                bottom: 20.0,
+                                right: 20.0,
+                                child: InkWell(
+                                  onTap: () {
+                                    _showPickOptionsDialog();
+                                  },
+                                  child: const Icon(Icons.camera_alt,
+                                      color: Color(0xFF919191), size: 28.0),
+                                ),
+                              )
+                            ],
                           ),
                         ),
                         const SizedBox(height: 10),
                         inputText(focusNode1, "Name", Icons.person, false,
                             usernameController, TextInputType.text),
                         const SizedBox(height: 20),
-                        inputText(focusNode2, "Phone Number",
-                            Icons.phone_android, false, phoneNumController, TextInputType.phone),
+                        inputText(
+                            focusNode2,
+                            "Phone Number",
+                            Icons.phone_android,
+                            false,
+                            phoneNumController,
+                            TextInputType.phone),
                         const SizedBox(height: 20),
                         inputText(focusNode3, "Home Address", Icons.home, false,
                             addressController, TextInputType.text),
@@ -356,15 +388,22 @@ class _RegistrationState extends State<Registration> {
           mainAxisSize: MainAxisSize.min,
           children: <Widget>[
             ListTile(
-              title: Text("Pick from Gallery"),
-              onTap: () {
-                _loadPicker(ImageSource.gallery);
+              leading: const Icon(
+                Icons.photo_library,
+                color: Colors.blue,
+              ),
+              title: const Text("Pick from Gallery"),
+              onTap: () => {
+                Navigator.of(context).pop(),
+                _galleryPicker(),
               },
             ),
             ListTile(
-              title: Text("Take a Picture"),
-              onTap: () {
-                _loadPicker(ImageSource.camera);
+              leading: const Icon(Icons.photo_camera, color: Colors.blue),
+              title: const Text("Take a Picture"),
+              onTap: () => {
+                Navigator.of(context).pop(),
+                _cameraPicker(),
               },
             )
           ],
@@ -373,22 +412,60 @@ class _RegistrationState extends State<Registration> {
     );
   }
 
-  _loadPicker(ImageSource source) async {
-    final _picker = ImagePicker();
-    final XFile? picked = await _picker.pickImage(source: source);
-    final File? imagefile = File(picked!.path);
-    if (imagefile != null) {
-      setState(() {
-        _pickedImage = imagefile;
-      });
+  _galleryPicker() async {
+    final picker = ImagePicker();
+    final pickedFile = await picker.pickImage(
+      source: ImageSource.gallery,
+      maxHeight: 800,
+      maxWidth: 800,
+    );
+    if (pickedFile != null) {
+      _imageFile = File(pickedFile.path);
+      _cropImage();
     }
-    // _cropImage();
-    Navigator.pop(context);
+  }
+
+  _cameraPicker() async {
+    final picker = ImagePicker();
+    final pickedFile = await picker.pickImage(
+      source: ImageSource.camera,
+      maxHeight: 800,
+      maxWidth: 800,
+    );
+    if (pickedFile != null) {
+      _imageFile = File(pickedFile.path);
+      _cropImage();
+    }
+  }
+
+  Future<void> _cropImage() async {
+    File? croppedFile = await ImageCropper().cropImage(
+        sourcePath: _imageFile!.path,
+        aspectRatioPresets: [
+          CropAspectRatioPreset.square,
+          // CropAspectRatioPreset.ratio3x2,
+          // CropAspectRatioPreset.original,
+          // CropAspectRatioPreset.ratio4x3,
+          // CropAspectRatioPreset.ratio16x9
+        ],
+        androidUiSettings: const AndroidUiSettings(
+            toolbarTitle: 'Cropper',
+            toolbarColor: Colors.deepOrange,
+            toolbarWidgetColor: Colors.white,
+            initAspectRatio: CropAspectRatioPreset.original,
+            lockAspectRatio: false),
+        iosUiSettings: const IOSUiSettings(
+          minimumAspectRatio: 1.0,
+        ));
+    if (croppedFile != null) {
+      _imageFile = croppedFile;
+      setState(() {});
+    }
   }
 
   // Future<void> _cropImage() async {
   //   final croppedFile = await ImageCropper().cropImage(
-  //     sourcePath: _pickedImage!.path,
+  //     sourcePath: _pickedFile!.path,
   //     aspectRatioPresets: [
   //       CropAspectRatioPreset.square,
   //       CropAspectRatioPreset.ratio3x2,
@@ -409,9 +486,12 @@ class _RegistrationState extends State<Registration> {
   //     ],
   //   );
   //   if (croppedFile != null) {
+  //     print('1');
   //     setState(() {
-  //       _croppedFile = croppedFile;
+  //       _pickedFile = croppedFile as XFile?;
   //     });
+  //   } else {
+  //     print('2');
   //   }
   // }
 }

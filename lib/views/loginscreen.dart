@@ -2,10 +2,11 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:my_tutor/homepage.dart';
-import 'package:my_tutor/registrationscreen.dart';
+import 'package:my_tutor/views/homepage.dart';
+import 'package:my_tutor/views/registrationscreen.dart';
 import 'package:http/http.dart' as http;
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 void main() => runApp(const LoginScreen());
 
@@ -20,7 +21,14 @@ class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
+  bool remember = false;
   bool _isObscure = true;
+
+  @override
+  void initState() {
+    super.initState();
+    loadPref();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -85,11 +93,33 @@ class _LoginScreenState extends State<LoginScreen> {
                 children: [
                   aboveText('Email address'),
                   const SizedBox(height: 5),
-                  textFormField(emailController, false),
+                  textFormField(emailController),
                   const SizedBox(height: 30),
                   aboveText('Password'),
                   const SizedBox(height: 5),
-                  textFormField(passwordController, _isObscure),
+                  TextFormField(
+                    obscureText: _isObscure,
+                    controller: passwordController,
+                    decoration: InputDecoration(
+                      contentPadding: const EdgeInsets.fromLTRB(10, 15, 0, 0),
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10.0),
+                        borderSide: const BorderSide(
+                          color: Color.fromARGB(255, 9, 56, 95),
+                        ),
+                      ),
+                      suffixIcon: IconButton(
+                        icon: Icon(_isObscure
+                            ? Icons.visibility
+                            : Icons.visibility_off),
+                        onPressed: () {
+                          setState(() {
+                            _isObscure = !_isObscure;
+                          });
+                        },
+                      ),
+                    ),
+                  ),
                   const SizedBox(height: 30),
                   SizedBox(
                     height: 50,
@@ -166,12 +196,11 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
-  TextFormField textFormField(controller, obscure) {
+  TextFormField textFormField(controller) {
     return TextFormField(
-      obscureText: obscure,
       controller: controller,
       decoration: InputDecoration(
-        contentPadding: const EdgeInsets.fromLTRB(0, 15, 0, 0),
+        contentPadding: const EdgeInsets.fromLTRB(10, 15, 0, 0),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(10.0),
           borderSide: const BorderSide(
@@ -206,5 +235,53 @@ class _LoginScreenState extends State<LoginScreen> {
             context, MaterialPageRoute(builder: (content) => const HomePage()));
       }
     });
+  }
+
+  void _saveRemovePref(bool value) async {
+    if (_formKey.currentState!.validate()) {
+      _formKey.currentState!.save();
+      String email = emailController.text;
+      String password = passwordController.text;
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      if (value) {
+        await prefs.setString('email', email);
+        await prefs.setString('pass', password);
+        await prefs.setBool('remember', true);
+      } else {
+        await prefs.setString('email', '');
+        await prefs.setString('pass', '');
+        await prefs.setBool('remember', false);
+        emailController.text = "";
+        passwordController.text = "";
+      }
+    } else {
+      remember = false;
+    }
+  }
+
+  void _onRememberMeChanged(bool value) {
+    remember = value;
+    setState(() {
+      if (remember) {
+        _saveRemovePref(true);
+      } else {
+        _saveRemovePref(false);
+      }
+    });
+  }
+
+  Future<void> loadPref() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String email = (prefs.getString('email')) ?? '';
+    String password = (prefs.getString('pass')) ?? '';
+    remember = (prefs.getBool('remember')) ?? false;
+
+    if (remember) {
+      setState(() {
+        emailController.text = email;
+        passwordController.text = password;
+        remember = true;
+      });
+    }
   }
 }
