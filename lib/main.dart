@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:my_tutor/loginscreen.dart';
-import 'package:my_tutor/registrationscreen.dart';
-import 'package:my_tutor/splashscreen.dart';
+import 'package:my_tutor/views/loginscreen.dart';
+import 'package:my_tutor/views/registrationscreen.dart';
+import 'package:my_tutor/views/splashscreen.dart';
 
 void main() => runApp(const MyApp());
 

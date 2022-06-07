@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:my_tutor/views/changePass.dart';
 import 'package:my_tutor/views/homepage.dart';
 import 'package:my_tutor/views/registrationscreen.dart';
 import 'package:http/http.dart' as http;
@@ -161,7 +162,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                       ),
                       GestureDetector(
-                        onTap: () {},
+                        onTap: _forgotPassword,
                         child: const Text(
                           "Forgot Password",
                           style: TextStyle(
@@ -232,7 +233,7 @@ class _LoginScreenState extends State<LoginScreen> {
             fontSize: 16.0);
       } else {
         Navigator.pushReplacement(
-            context, MaterialPageRoute(builder: (content) => const HomePage()));
+            context, MaterialPageRoute(builder: (content) => HomePage()));
       }
     });
   }
@@ -283,5 +284,98 @@ class _LoginScreenState extends State<LoginScreen> {
         remember = true;
       });
     }
+  }
+
+  void _forgotPassword() {
+    TextEditingController _useremailController = TextEditingController();
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+              title: const Text("Forgot Your Password?"),
+              content: SizedBox(
+                  height: 90,
+                  child: Column(children: [
+                    TextField(
+                        keyboardType: TextInputType.emailAddress,
+                        controller: _useremailController,
+                        decoration: const InputDecoration(
+                            labelText: 'Email', icon: Icon(Icons.email))),
+                  ])),
+              actions: [
+                TextButton(
+                  child: const Text("Submit"),
+                  onPressed: () {
+                    _resetPassword(_useremailController.text);
+                  },
+                ),
+                TextButton(
+                    child: const Text("Cancel"),
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    })
+              ]);
+        });
+  }
+
+  void _resetPassword(String userEmail) {
+    http.post(
+        Uri.parse("https://hubbuddies.com/271513/myTutor/php/resetuser.php"),
+        body: {
+          // "firstName": ,
+          //"lastName": lastName,
+          "email": userEmail,
+          //"phoneNumber": phoneNumber,
+          //"password": password
+        }).then((respone) {
+      print(respone.body);
+      if (respone.body == "success") {
+        Fluttertoast.showToast(
+          msg: "Reset Done! Please check your email !",
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.CENTER,
+          timeInSecForIosWeb: 1,
+          backgroundColor: Colors.white,
+          textColor: Colors.black,
+          fontSize: 16.0,
+        );
+        Navigator.push(context,
+            MaterialPageRoute(builder: (content) => const LoginScreen()));
+      } else if (respone.body == "reset failed") {
+        Fluttertoast.showToast(
+          msg: "Reset Failed !",
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.CENTER,
+          timeInSecForIosWeb: 1,
+          backgroundColor: Colors.white,
+          textColor: Colors.black,
+          fontSize: 16.0,
+        );
+        Navigator.push(context,
+            MaterialPageRoute(builder: (content) => const LoginScreen()));
+      } else if (respone.body == "no user") {
+        Fluttertoast.showToast(
+          msg: "This user not found",
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.CENTER,
+          timeInSecForIosWeb: 1,
+          backgroundColor: Colors.white,
+          textColor: Colors.black,
+          fontSize: 16.0,
+        );
+        Navigator.push(context,
+            MaterialPageRoute(builder: (content) => const LoginScreen()));
+      } else {
+        Fluttertoast.showToast(
+          msg: "Failed",
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.CENTER,
+          timeInSecForIosWeb: 1,
+          backgroundColor: Colors.white,
+          textColor: Colors.black,
+          fontSize: 16.0,
+        );
+      }
+    });
   }
 }
