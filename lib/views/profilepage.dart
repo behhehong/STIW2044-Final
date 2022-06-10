@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:image_cropper/image_cropper.dart';
@@ -15,17 +16,6 @@ class Profile extends StatefulWidget {
 }
 
 class _ProfileState extends State<Profile> {
-  var _image;
-  late String pathAsset;
-
-  @override
-  void initState() {
-    super.initState();
-    pathAsset = "https://hubbuddies.com/271513/myTutor/assets/profilepic/" +
-        widget.user.userId.toString() +
-        '.jpg';
-  }
-
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -64,21 +54,14 @@ class _ProfileState extends State<Profile> {
                             borderRadius: BorderRadius.circular(100),
                             child: FittedBox(
                               fit: BoxFit.cover,
-                              child: _image == null
-                                  ? Image.asset(pathAsset)
-                                  : Image.file(_image),
+                              child: CachedNetworkImage(
+                                imageUrl:
+                                    "https://hubbuddies.com/271513/myTutor/assets/profilepic/" +
+                                        widget.user.userId.toString() +
+                                        '.jpg',
+                                fit: BoxFit.cover,
+                              ),
                             ),
-                          ),
-                        ),
-                        Positioned(
-                          bottom: 20.0,
-                          right: 20.0,
-                          child: InkWell(
-                            onTap: () => {
-                              _showPickOptionsDialog(),
-                            },
-                            child: const Icon(Icons.camera_alt,
-                                color: Color(0xFF919191), size: 28.0),
                           ),
                         ),
                       ],
@@ -236,88 +219,5 @@ class _ProfileState extends State<Profile> {
         ],
       ))),
     );
-  }
-
-  _showPickOptionsDialog() {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) => AlertDialog(
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: <Widget>[
-            ListTile(
-              leading: const Icon(
-                Icons.photo_library,
-                color: Colors.blue,
-              ),
-              title: const Text("Pick from Gallery"),
-              onTap: () => {
-                Navigator.of(context).pop(),
-                _galleryPicker(),
-              },
-            ),
-            ListTile(
-              leading: const Icon(Icons.photo_camera, color: Colors.blue),
-              title: const Text("Take a Picture"),
-              onTap: () => {
-                Navigator.of(context).pop(),
-                _cameraPicker(),
-              },
-            )
-          ],
-        ),
-      ),
-    );
-  }
-
-  _galleryPicker() async {
-    final picker = ImagePicker();
-    final pickedFile = await picker.pickImage(
-      source: ImageSource.gallery,
-      maxHeight: 800,
-      maxWidth: 800,
-    );
-    if (pickedFile != null) {
-      _image = File(pickedFile.path);
-      _cropImage();
-    }
-  }
-
-  _cameraPicker() async {
-    final picker = ImagePicker();
-    final pickedFile = await picker.pickImage(
-      source: ImageSource.camera,
-      maxHeight: 800,
-      maxWidth: 800,
-    );
-    if (pickedFile != null) {
-      _image = File(pickedFile.path);
-      _cropImage();
-    }
-  }
-
-  Future<void> _cropImage() async {
-    File? croppedFile = await ImageCropper().cropImage(
-        sourcePath: _image!.path,
-        aspectRatioPresets: [
-          CropAspectRatioPreset.square,
-          CropAspectRatioPreset.ratio3x2,
-          CropAspectRatioPreset.original,
-          CropAspectRatioPreset.ratio4x3,
-          CropAspectRatioPreset.ratio16x9
-        ],
-        androidUiSettings: const AndroidUiSettings(
-            toolbarTitle: 'Cropper',
-            toolbarColor: Colors.deepOrange,
-            toolbarWidgetColor: Colors.white,
-            initAspectRatio: CropAspectRatioPreset.original,
-            lockAspectRatio: false),
-        iosUiSettings: const IOSUiSettings(
-          minimumAspectRatio: 1.0,
-        ));
-    if (croppedFile != null) {
-      _image = croppedFile;
-      setState(() {});
-    }
   }
 }

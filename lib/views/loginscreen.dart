@@ -122,7 +122,18 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                       ),
                     ),
-                    const SizedBox(height: 30),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        Checkbox(
+                          value: remember,
+                          onChanged: (bool? value) {
+                            _onRememberMeChanged(value!);
+                          },
+                        ),
+                        const Text("Remember Me"),
+                      ],
+                    ),
                     SizedBox(
                       height: 50,
                       width: double.infinity,
@@ -225,7 +236,7 @@ class _LoginScreenState extends State<LoginScreen> {
         var data = jsonDecode(response.body);
         if (response.statusCode == 200 && data['status'] == 'Success') {
           User user = User.fromJson(data['data']);
-          
+
           Navigator.pushReplacement(context,
               MaterialPageRoute(builder: (content) => MainPage(user: user)));
         } else {
