@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/foundation.dart';
@@ -6,12 +7,11 @@ import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:image_cropper/image_cropper.dart';
+import 'package:my_tutor/models/user.dart';
 import 'package:my_tutor/views/loginscreen.dart';
 import 'package:http/http.dart' as http;
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:email_validator/email_validator.dart';
-
-void main() => runApp(const Registration());
 
 class Registration extends StatefulWidget {
   const Registration({Key? key}) : super(key: key);
@@ -28,12 +28,12 @@ class _RegistrationState extends State<Registration> {
   final FocusNode focusNode5 = FocusNode();
   final FocusNode focusNode6 = FocusNode();
 
-  TextEditingController usernameController = TextEditingController();
-  TextEditingController phoneNumController = TextEditingController();
-  TextEditingController addressController = TextEditingController();
-  TextEditingController emailController = TextEditingController();
-  TextEditingController passwordController = TextEditingController();
-  TextEditingController cpasswordController = TextEditingController();
+  TextEditingController _usernameController = TextEditingController();
+  TextEditingController _phoneNumController = TextEditingController();
+  TextEditingController _addressController = TextEditingController();
+  TextEditingController _emailController = TextEditingController();
+  TextEditingController _passwordController = TextEditingController();
+  TextEditingController _cpasswordController = TextEditingController();
 
   bool _isObscure1 = true;
   bool _isObscure2 = true;
@@ -67,12 +67,12 @@ class _RegistrationState extends State<Registration> {
   @override
   void dispose() {
     print("dispose was called");
-    usernameController.dispose();
-    phoneNumController.dispose();
-    addressController.dispose();
-    emailController.dispose();
-    passwordController.dispose();
-    cpasswordController.dispose();
+    _usernameController.dispose();
+    _phoneNumController.dispose();
+    _addressController.dispose();
+    _emailController.dispose();
+    _passwordController.dispose();
+    _cpasswordController.dispose();
     super.dispose();
   }
 
@@ -143,26 +143,26 @@ class _RegistrationState extends State<Registration> {
                         ),
                         const SizedBox(height: 10),
                         inputText(focusNode1, "Name", Icons.person, false,
-                            usernameController, TextInputType.text),
+                            _usernameController, TextInputType.text),
                         const SizedBox(height: 20),
                         inputText(
                             focusNode2,
                             "Phone Number",
                             Icons.phone_android,
                             false,
-                            phoneNumController,
+                            _phoneNumController,
                             TextInputType.phone),
                         const SizedBox(height: 20),
                         inputText(focusNode3, "Home Address", Icons.home, false,
-                            addressController, TextInputType.text),
+                            _addressController, TextInputType.text),
                         const SizedBox(height: 20),
                         inputText(focusNode4, "Email", Icons.email, false,
-                            emailController, TextInputType.emailAddress),
+                            _emailController, TextInputType.emailAddress),
                         const SizedBox(height: 20),
                         TextFormField(
                           keyboardType: TextInputType.text,
                           obscureText: _isObscure1,
-                          controller: passwordController,
+                          controller: _passwordController,
                           cursorColor: Colors.grey,
                           focusNode: focusNode5,
                           textAlign: TextAlign.left,
@@ -201,7 +201,7 @@ class _RegistrationState extends State<Registration> {
                         TextFormField(
                           keyboardType: TextInputType.text,
                           obscureText: _isObscure2,
-                          controller: cpasswordController,
+                          controller: _cpasswordController,
                           cursorColor: Colors.grey,
                           focusNode: focusNode6,
                           textAlign: TextAlign.left,
@@ -296,12 +296,13 @@ class _RegistrationState extends State<Registration> {
   }
 
   void _userSignUp() {
-    String _username = usernameController.text.toString();
-    String _phoneNum = phoneNumController.text.toString();
-    String _address = addressController.text.toString();
-    String _email = emailController.text.toString();
-    String _password = passwordController.text.toString();
-    String _confirmPassword = cpasswordController.text.toString();
+    String _username = _usernameController.text;
+    String _phoneNum = _phoneNumController.text;
+    String _address = _addressController.text;
+    String _email = _emailController.text;
+    String _password = _passwordController.text;
+    String _confirmPassword = _cpasswordController.text;
+    String base64Image = base64Encode(_imageFile!.readAsBytesSync());
     bool isValid = EmailValidator.validate(_email);
 
     if (_username.isNotEmpty &&
@@ -320,21 +321,13 @@ class _RegistrationState extends State<Registration> {
                 "phoneNum": _phoneNum,
                 "address": _address,
                 "email": _email,
-                "password": _password
+                "password": _password,
+                "image": base64Image,
               }).then((response) {
             print(response.body);
-            if (response.body == "Failed") {
-              print("Failed");
-              Fluttertoast.showToast(
-                  msg: "Email has been used. Please try again",
-                  toastLength: Toast.LENGTH_SHORT,
-                  gravity: ToastGravity.BOTTOM,
-                  timeInSecForIosWeb: 1,
-                  backgroundColor: Colors.white,
-                  textColor: Colors.black,
-                  fontSize: 16.0);
-              return;
-            } else {
+            print(response.statusCode);
+            var data = jsonDecode(response.body);
+            if (response.statusCode == 200 && data['status'] == 'success') {
               print("Success");
               Fluttertoast.showToast(
                   msg: "Sign up success!",
@@ -346,6 +339,17 @@ class _RegistrationState extends State<Registration> {
                   fontSize: 16.0);
               Navigator.pushReplacement(context,
                   MaterialPageRoute(builder: (context) => const LoginScreen()));
+              return;
+            } else {
+              print("Failed");
+              Fluttertoast.showToast(
+                  msg: "Email has been used. Please try again",
+                  toastLength: Toast.LENGTH_SHORT,
+                  gravity: ToastGravity.BOTTOM,
+                  timeInSecForIosWeb: 1,
+                  backgroundColor: Colors.white,
+                  textColor: Colors.black,
+                  fontSize: 16.0);
             }
           });
         } else {
@@ -390,7 +394,7 @@ class _RegistrationState extends State<Registration> {
             ListTile(
               leading: const Icon(
                 Icons.photo_library,
-                color: Colors.blue,
+                color: Color.fromARGB(255, 9, 56, 95),
               ),
               title: const Text("Pick from Gallery"),
               onTap: () => {
@@ -399,7 +403,10 @@ class _RegistrationState extends State<Registration> {
               },
             ),
             ListTile(
-              leading: const Icon(Icons.photo_camera, color: Colors.blue),
+              leading: const Icon(
+                Icons.photo_camera,
+                color: Color.fromARGB(255, 9, 56, 95),
+              ),
               title: const Text("Take a Picture"),
               onTap: () => {
                 Navigator.of(context).pop(),
@@ -443,10 +450,10 @@ class _RegistrationState extends State<Registration> {
         sourcePath: _imageFile!.path,
         aspectRatioPresets: [
           CropAspectRatioPreset.square,
-          // CropAspectRatioPreset.ratio3x2,
-          // CropAspectRatioPreset.original,
-          // CropAspectRatioPreset.ratio4x3,
-          // CropAspectRatioPreset.ratio16x9
+          CropAspectRatioPreset.ratio3x2,
+          CropAspectRatioPreset.original,
+          CropAspectRatioPreset.ratio4x3,
+          CropAspectRatioPreset.ratio16x9
         ],
         androidUiSettings: const AndroidUiSettings(
             toolbarTitle: 'Cropper',
@@ -462,36 +469,4 @@ class _RegistrationState extends State<Registration> {
       setState(() {});
     }
   }
-
-  // Future<void> _cropImage() async {
-  //   final croppedFile = await ImageCropper().cropImage(
-  //     sourcePath: _pickedFile!.path,
-  //     aspectRatioPresets: [
-  //       CropAspectRatioPreset.square,
-  //       CropAspectRatioPreset.ratio3x2,
-  //       CropAspectRatioPreset.original,
-  //       CropAspectRatioPreset.ratio4x3,
-  //       CropAspectRatioPreset.ratio16x9
-  //     ],
-  //     uiSettings: [
-  //       AndroidUiSettings(
-  //           toolbarTitle: 'Crop Image',
-  //           toolbarColor: Colors.deepOrange,
-  //           toolbarWidgetColor: Colors.white,
-  //           initAspectRatio: CropAspectRatioPreset.original,
-  //           lockAspectRatio: false),
-  //       IOSUiSettings(
-  //         minimumAspectRatio: 1.0,
-  //       )
-  //     ],
-  //   );
-  //   if (croppedFile != null) {
-  //     print('1');
-  //     setState(() {
-  //       _pickedFile = croppedFile as XFile?;
-  //     });
-  //   } else {
-  //     print('2');
-  //   }
-  // }
 }

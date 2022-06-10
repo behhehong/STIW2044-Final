@@ -31,7 +31,7 @@ class _ChangePassState extends State<ChangePass> {
 
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: const Color(0xFF1565C0),
+        backgroundColor: Color.fromARGB(255, 9, 56, 95),
         title: const Text("Change Password",
             style: TextStyle(fontFamily: 'Arial')),
       ),
@@ -59,7 +59,7 @@ class _ChangePassState extends State<ChangePass> {
                             ),
                             SizedBox(height: 20),
                             Text(
-                              "Set a new password in order to login Cyberform",
+                              "Set a new password in order to login MyTutor",
                               textAlign: TextAlign.center,
                               style: Theme.of(context).textTheme.bodyText2,
                             ),
@@ -73,7 +73,7 @@ class _ChangePassState extends State<ChangePass> {
                                 Radius.circular(10),
                               ),
                               border: Border.all(
-                                color: const Color(0xFF1565C0),
+                                color: Color.fromARGB(255, 9, 56, 95),
                               )),
                           child: Padding(
                             padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
@@ -88,13 +88,13 @@ class _ChangePassState extends State<ChangePass> {
                                                 .secondary)),
                                     icon: Icon(
                                       Icons.lock,
-                                      color: Color(0xFF1565C0),
+                                      color: Color.fromARGB(255, 9, 56, 95),
                                     ),
                                     labelText: 'Current Password',
                                     labelStyle: TextStyle(
                                         fontSize: 18,
                                         fontFamily: 'Calibri',
-                                        color: Color(0xFF1565C0)),
+                                        color: Color.fromARGB(255, 9, 56, 95)),
                                     suffixIcon: GestureDetector(
                                         onTap: () {
                                           setState(() {
@@ -105,7 +105,7 @@ class _ChangePassState extends State<ChangePass> {
                                             hiddenPassword1
                                                 ? Icons.visibility_off
                                                 : Icons.visibility,
-                                            color: Color(0xFF1565C0)))),
+                                            color: Color.fromARGB(255, 9, 56, 95)))),
                                 obscureText: hiddenPassword1,
                               ),
                               SizedBox(height: 20),
@@ -119,13 +119,13 @@ class _ChangePassState extends State<ChangePass> {
                                                 .secondary)),
                                     icon: Icon(
                                       Icons.lock,
-                                      color: Color(0xFF1565C0),
+                                      color: Color.fromARGB(255, 9, 56, 95),
                                     ),
                                     labelText: 'New Password',
                                     labelStyle: TextStyle(
                                         fontSize: 18,
                                         fontFamily: 'Calibri',
-                                        color: Color(0xFF1565C0)),
+                                        color: Color.fromARGB(255, 9, 56, 95)),
                                     suffixIcon: GestureDetector(
                                         onTap: () {
                                           setState(() {
@@ -136,7 +136,7 @@ class _ChangePassState extends State<ChangePass> {
                                             hiddenPassword2
                                                 ? Icons.visibility_off
                                                 : Icons.visibility,
-                                            color: Color(0xFF1565C0)))),
+                                            color: Color.fromARGB(255, 9, 56, 95)))),
                                 obscureText: hiddenPassword2,
                                 onChanged: (value) {
                                   setState(() {});
@@ -153,13 +153,13 @@ class _ChangePassState extends State<ChangePass> {
                                                 .secondary)),
                                     icon: Icon(
                                       Icons.lock,
-                                      color: Color(0xFF1565C0),
+                                      color: Color.fromARGB(255, 9, 56, 95),
                                     ),
                                     labelText: 'Confirm Password',
                                     labelStyle: TextStyle(
                                         fontSize: 18,
                                         fontFamily: 'Calibri',
-                                        color: Color(0xFF1565C0)),
+                                        color: Color.fromARGB(255, 9, 56, 95)),
                                     suffixIcon: GestureDetector(
                                         onTap: () {
                                           setState(() {
@@ -170,7 +170,7 @@ class _ChangePassState extends State<ChangePass> {
                                             hiddenPassword3
                                                 ? Icons.visibility_off
                                                 : Icons.visibility,
-                                            color: Color(0xFF1565C0)))),
+                                            color: Color.fromARGB(255, 9, 56, 95)))),
                                 obscureText: hiddenPassword3,
                                 onChanged: (value) {
                                   setState(() {});
@@ -194,7 +194,7 @@ class _ChangePassState extends State<ChangePass> {
                       fontSize: 18, color: Colors.white, fontFamily: 'Arial'),
                 ),
                 onPressed: _onReset,
-                color: Color(0xFF1565C0),
+                color: Color.fromARGB(255, 9, 56, 95),
               ),
             ]),
           ),
@@ -284,7 +284,7 @@ class _ChangePassState extends State<ChangePass> {
 
     http.post(
         Uri.parse(
-            "https://hubbuddies.com/271513/cyberform/php/change_password.php"),
+            "https://hubbuddies.com/271513/myTutor/php/change_password.php"),
         body: {
           "email": widget.user.email,
           "password": _newPassword,

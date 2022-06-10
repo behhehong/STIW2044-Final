@@ -1,10 +1,9 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:my_tutor/models/user.dart';
 import 'loginscreen.dart';
 import 'package:google_fonts/google_fonts.dart';
-
-void main() => runApp(const SplashScreen());
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({Key? key}) : super(key: key);
@@ -20,7 +19,9 @@ class _SplashScreenState extends State<SplashScreen> {
     Timer(
         const Duration(seconds: 4),
         () => Navigator.pushReplacement(
-            context, MaterialPageRoute(builder: (context) => LoginScreen())));
+            context,
+            MaterialPageRoute(
+                builder: (context) => const LoginScreen())));
   }
 
   @override
