@@ -117,14 +117,22 @@ class _RegistrationState extends State<Registration> {
                         Center(
                           child: Stack(
                             children: <Widget>[
-                              CircleAvatar(
-                                backgroundColor: Colors.transparent,
-                                radius: 70,
+                              Container(
+                                width: 130,
+                                height: 130,
+                                decoration: BoxDecoration(
+                                  color: Colors.transparent,
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(100.0)),
+                                ),
                                 child: ClipRRect(
                                   borderRadius: BorderRadius.circular(100),
-                                  child: _imageFile == null
-                                      ? Image.asset(pathAsset)
-                                      : Image.file(_imageFile),
+                                  child: FittedBox(
+                                    fit: BoxFit.cover,
+                                    child: _imageFile == null
+                                        ? Image.asset(pathAsset)
+                                        : Image.file(_imageFile),
+                                  ),
                                 ),
                               ),
                               Positioned(
@@ -324,8 +332,6 @@ class _RegistrationState extends State<Registration> {
                 "password": _password,
                 "image": base64Image,
               }).then((response) {
-            print(response.body);
-            print(response.statusCode);
             var data = jsonDecode(response.body);
             if (response.statusCode == 200 && data['status'] == 'success') {
               print("Success");

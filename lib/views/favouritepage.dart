@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-class HomePage1 extends StatelessWidget {
+class FavouritePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -11,7 +11,7 @@ class HomePage1 extends StatelessWidget {
         ),
         body: Center(
           child: Container(
-            child: Text('Byebye'),
+            child: Text('Hello World'),
           ),
         ),
       ),

@@ -1,12 +1,13 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:my_tutor/views/favouritepage.dart';
 import 'package:my_tutor/views/settings.dart';
-import 'package:my_tutor/views/subjects.dart';
-import 'package:my_tutor/views/homepage1.dart';
-import 'package:my_tutor/views/homepage2.dart';
+import 'package:my_tutor/views/subjectpage.dart';
+import 'package:my_tutor/views/tutorpage.dart';
+import 'package:my_tutor/views/subscribepage.dart';
 import 'package:my_tutor/views/loginscreen.dart';
-import 'package:my_tutor/views/profile.dart';
+import 'package:my_tutor/views/profilepage.dart';
 
 import '../models/user.dart';
 
@@ -34,10 +35,10 @@ class _MainPageState extends State<MainPage> {
   void initState() {
     super.initState();
 
-    _page1 = Subjects(user: widget.user);
-    _page2 = HomePage1();
-    _page3 = HomePage2();
-    _page4 = Subjects(user: widget.user);
+    _page1 = SubjectPage();
+    _page2 = TutorPage();
+    _page3 = SubscribePage();
+    _page4 = FavouritePage();
     _page5 = Profile(
       user: widget.user,
     );
