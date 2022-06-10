@@ -16,7 +16,15 @@ class Profile extends StatefulWidget {
 
 class _ProfileState extends State<Profile> {
   var _image;
-  String pathAsset = 'assets/images/profilepic.jpg';
+  late String pathAsset;
+
+  @override
+  void initState() {
+    super.initState();
+    pathAsset = "https://hubbuddies.com/271513/myTutor/assets/profilepic/" +
+        widget.user.userId.toString() +
+        '.jpg';
+  }
 
   @override
   Widget build(BuildContext context) {

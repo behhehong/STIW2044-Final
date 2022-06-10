@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:my_tutor/models/tutor.dart';
 import 'package:my_tutor/views/favouritepage.dart';
 import 'package:my_tutor/views/settings.dart';
 import 'package:my_tutor/views/subjectpage.dart';
@@ -13,7 +14,8 @@ import '../models/user.dart';
 
 class MainPage extends StatefulWidget {
   final User user;
-  const MainPage({Key? key, required this.user}) : super(key: key);
+  const MainPage({Key? key, required this.user})
+      : super(key: key);
 
   @override
   State<MainPage> createState() => _MainPageState();

@@ -13,7 +13,7 @@ class _SubscribePageState extends State<SubscribePage> {
     return Scaffold(
       body: Center(
         child: Container(
-          child: Text('Yo'),
+          child: Text('Subscribe'),
         ),
       ),
     );
