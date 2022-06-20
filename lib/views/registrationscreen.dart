@@ -130,7 +130,7 @@ class _RegistrationState extends State<Registration> {
                                   child: FittedBox(
                                     fit: BoxFit.cover,
                                     child: _imageFile == null
-                                        ? Image.asset(pathAsset)
+                                        ? Image.asset(pathAsset) 
                                         : Image.file(_imageFile),
                                   ),
                                 ),
@@ -313,6 +313,7 @@ class _RegistrationState extends State<Registration> {
     String base64Image = base64Encode(_imageFile!.readAsBytesSync());
     bool isValid = EmailValidator.validate(_email);
 
+  if(_imageFile != null) {
     if (_username.isNotEmpty &&
         _phoneNum.isNotEmpty &&
         _address.isNotEmpty &&
@@ -388,6 +389,16 @@ class _RegistrationState extends State<Registration> {
           textColor: Colors.black,
           fontSize: 16.0);
     }
+  } else {
+    Fluttertoast.showToast(
+              msg: "Please select your proile picture!",
+              toastLength: Toast.LENGTH_SHORT,
+              gravity: ToastGravity.BOTTOM,
+              timeInSecForIosWeb: 1,
+              backgroundColor: Colors.white,
+              textColor: Colors.black,
+              fontSize: 16.0);
+  }
   }
 
   _showPickOptionsDialog() {
@@ -463,7 +474,7 @@ class _RegistrationState extends State<Registration> {
         ],
         androidUiSettings: const AndroidUiSettings(
             toolbarTitle: 'Cropper',
-            toolbarColor: Colors.deepOrange,
+            toolbarColor: Color.fromARGB(255, 9, 56, 95),
             toolbarWidgetColor: Colors.white,
             initAspectRatio: CropAspectRatioPreset.original,
             lockAspectRatio: false),
@@ -472,6 +483,7 @@ class _RegistrationState extends State<Registration> {
         ));
     if (croppedFile != null) {
       _imageFile = croppedFile;
+      
       setState(() {});
     }
   }
