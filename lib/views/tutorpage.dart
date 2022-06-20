@@ -44,6 +44,24 @@ class _TutorPageState extends State<TutorPage> {
       //rowcount = 3;
     }
     return Scaffold(
+      appBar: AppBar(
+        title: Text('Tutors'),
+        backgroundColor: const Color.fromARGB(255, 9, 56, 95),
+        centerTitle: true,
+        actions: [
+          IconButton(
+            onPressed: () {
+              // Navigator.push(
+              //   context,
+              //   MaterialPageRoute(
+              //     builder: (context) => Settings(user: widget.user),
+              //   ),
+              // );
+            },
+            icon: const Icon(Icons.search),
+          )
+        ],
+      ),
       body: tutorList.isEmpty
           ? Center(
               child: Text(

@@ -14,8 +14,7 @@ import '../models/user.dart';
 
 class MainPage extends StatefulWidget {
   final User user;
-  const MainPage({Key? key, required this.user})
-      : super(key: key);
+  const MainPage({Key? key, required this.user}) : super(key: key);
 
   @override
   State<MainPage> createState() => _MainPageState();
@@ -47,59 +46,18 @@ class _MainPageState extends State<MainPage> {
     _pages = [_page1, _page2, _page3, _page4, _page5];
     _selectedIndex = 0;
     _currentPage = _page1;
-    text = text1;
   }
 
   void _onItemTapped(int index) {
     setState(() {
       _selectedIndex = index;
       _currentPage = _pages[index];
-
-      switch (index) {
-        case 0:
-          text = text1;
-          break;
-
-        case 1:
-          text = text2;
-          break;
-
-        case 2:
-          text = text3;
-          break;
-
-        case 3:
-          text = text4;
-          break;
-
-        case 4:
-          text = text5;
-          break;
-      }
     });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(text),
-        backgroundColor: const Color.fromARGB(255, 9, 56, 95),
-        centerTitle: true,
-        actions: [
-          IconButton(
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => Settings(user: widget.user),
-                ),
-              );
-            },
-            icon: const Icon(Icons.settings),
-          )
-        ],
-      ),
       body: _currentPage,
       bottomNavigationBar: BottomNavigationBar(
           items: const <BottomNavigationBarItem>[

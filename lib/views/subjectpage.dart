@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:my_tutor/models/subject.dart';
 import 'package:my_tutor/models/tutor.dart';
+import 'package:my_tutor/views/settings.dart';
 
 import '../models/user.dart';
 import 'package:http/http.dart' as http;
@@ -25,11 +26,13 @@ class _SubjectPageState extends State<SubjectPage> {
   var _tapPosition;
   var numofpage, curpage = 1;
   var color;
+  TextEditingController searchController = TextEditingController();
+  String search = "";
 
   @override
   void initState() {
     super.initState();
-    _loadSubjects(1);
+    _loadSubjects(1, search);
   }
 
   @override
@@ -44,6 +47,19 @@ class _SubjectPageState extends State<SubjectPage> {
       //rowcount = 3;
     }
     return Scaffold(
+      appBar: AppBar(
+        title: Text('Subjects'),
+        backgroundColor: const Color.fromARGB(255, 9, 56, 95),
+        centerTitle: true,
+        actions: [
+          IconButton(
+            onPressed: () {
+              _loadSearchDialog();
+            },
+            icon: const Icon(Icons.search),
+          )
+        ],
+      ),
       body: subjectList.isEmpty
           ? Center(
               child: Text(
@@ -64,7 +80,9 @@ class _SubjectPageState extends State<SubjectPage> {
                       (index) {
                         return InkWell(
                           splashColor: Colors.amber,
-                          onTap: () => {_loadSubjectDetails(index)},
+                          onTap: () => {
+                            _loadSubjectDetails(index),
+                          },
                           child: Card(
                               child: Column(children: [
                             Flexible(
@@ -108,7 +126,8 @@ class _SubjectPageState extends State<SubjectPage> {
                           return SizedBox(
                               width: 40,
                               child: TextButton(
-                                onPressed: () => {_loadSubjects(index + 1)},
+                                onPressed: () =>
+                                    {_loadSubjects(index + 1, search)},
                                 child: Text(
                                   (index + 1).toString(),
                                   style: TextStyle(color: color),
@@ -120,14 +139,16 @@ class _SubjectPageState extends State<SubjectPage> {
     );
   }
 
-  void _loadSubjects(int pageno) {
+  void _loadSubjects(int pageno, String search) {
     curpage = pageno;
     numofpage ?? 1;
     http.post(
         Uri.parse(
             "https://hubbuddies.com/271513/myTutor/php/load_subjects.php"),
-        body: {'pageno': pageno.toString()}).then((response) {
-      print(response.body);
+        body: {
+          'pageno': pageno.toString(),
+          'search': search,
+        }).then((response) {
       var jsondata = jsonDecode(response.body);
       if (response.statusCode == 200 && jsondata['status'] == 'success') {
         var extractdata = jsondata['data'];
@@ -242,6 +263,54 @@ class _SubjectPageState extends State<SubjectPage> {
                   Navigator.of(context).pop();
                 },
               ),
+            ],
+          );
+        });
+  }
+
+  void _loadSearchDialog() {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          // return object of type Dialog
+          return AlertDialog(
+            title: const Text(
+              "Search",
+            ),
+            content: SizedBox(
+              height: screenHeight / 5,
+              child: Column(
+                children: [
+                  TextField(
+                    controller: searchController,
+                    decoration: InputDecoration(
+                      labelText: 'Search',
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(5.0),
+                      ),
+                    ),
+                  ),
+                  ElevatedButton(
+                    onPressed: () {
+                      search = searchController.text;
+                      Navigator.of(context).pop();
+                      _loadSubjects(1, search);
+                    },
+                    child: const Text("Search"),
+                  )
+                ],
+              ),
+            ),
+            actions: <Widget>[
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: const Text(
+                  "Close",
+                  style: TextStyle(),
+                ),
+              )
             ],
           );
         });
