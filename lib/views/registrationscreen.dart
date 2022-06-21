@@ -1,13 +1,9 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:image_cropper/image_cropper.dart';
-import 'package:my_tutor/models/user.dart';
 import 'package:my_tutor/views/loginscreen.dart';
 import 'package:http/http.dart' as http;
 import 'package:fluttertoast/fluttertoast.dart';
@@ -28,16 +24,17 @@ class _RegistrationState extends State<Registration> {
   final FocusNode focusNode5 = FocusNode();
   final FocusNode focusNode6 = FocusNode();
 
-  TextEditingController _usernameController = TextEditingController();
-  TextEditingController _phoneNumController = TextEditingController();
-  TextEditingController _addressController = TextEditingController();
-  TextEditingController _emailController = TextEditingController();
-  TextEditingController _passwordController = TextEditingController();
-  TextEditingController _cpasswordController = TextEditingController();
+  final TextEditingController _usernameController = TextEditingController();
+  final TextEditingController _phoneNumController = TextEditingController();
+  final TextEditingController _addressController = TextEditingController();
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _cpasswordController = TextEditingController();
 
   bool _isObscure1 = true;
   bool _isObscure2 = true;
 
+  // ignore: prefer_typing_uninitialized_variables
   var _imageFile;
   String pathAsset = 'assets/images/profilepic.jpg';
 
@@ -120,7 +117,7 @@ class _RegistrationState extends State<Registration> {
                               Container(
                                 width: 130,
                                 height: 130,
-                                decoration: BoxDecoration(
+                                decoration: const BoxDecoration(
                                   color: Colors.transparent,
                                   borderRadius:
                                       BorderRadius.all(Radius.circular(100.0)),
@@ -130,7 +127,7 @@ class _RegistrationState extends State<Registration> {
                                   child: FittedBox(
                                     fit: BoxFit.cover,
                                     child: _imageFile == null
-                                        ? Image.asset(pathAsset) 
+                                        ? Image.asset(pathAsset)
                                         : Image.file(_imageFile),
                                   ),
                                 ),
@@ -313,7 +310,6 @@ class _RegistrationState extends State<Registration> {
     String base64Image = base64Encode(_imageFile!.readAsBytesSync());
     bool isValid = EmailValidator.validate(_email);
 
-  if(_imageFile != null) {
     if (_username.isNotEmpty &&
         _phoneNum.isNotEmpty &&
         _address.isNotEmpty &&
@@ -336,16 +332,7 @@ class _RegistrationState extends State<Registration> {
             var data = jsonDecode(response.body);
             if (response.statusCode == 200 && data['status'] == 'success') {
               print("Success");
-              Fluttertoast.showToast(
-                  msg: "Sign up success!",
-                  toastLength: Toast.LENGTH_SHORT,
-                  gravity: ToastGravity.BOTTOM,
-                  timeInSecForIosWeb: 1,
-                  backgroundColor: Colors.white,
-                  textColor: Colors.black,
-                  fontSize: 16.0);
-              Navigator.pushReplacement(context,
-                  MaterialPageRoute(builder: (context) => const LoginScreen()));
+              _verify(context);
               return;
             } else {
               print("Failed");
@@ -389,16 +376,6 @@ class _RegistrationState extends State<Registration> {
           textColor: Colors.black,
           fontSize: 16.0);
     }
-  } else {
-    Fluttertoast.showToast(
-              msg: "Please select your proile picture!",
-              toastLength: Toast.LENGTH_SHORT,
-              gravity: ToastGravity.BOTTOM,
-              timeInSecForIosWeb: 1,
-              backgroundColor: Colors.white,
-              textColor: Colors.black,
-              fontSize: 16.0);
-  }
   }
 
   _showPickOptionsDialog() {
@@ -483,8 +460,49 @@ class _RegistrationState extends State<Registration> {
         ));
     if (croppedFile != null) {
       _imageFile = croppedFile;
-      
+
       setState(() {});
     }
+  }
+
+  _verify(BuildContext context) async {
+    // set up the buttons
+    Widget okButton = TextButton(
+      child: const Text("OK"),
+      onPressed: () {
+        Fluttertoast.showToast(
+            msg: "Sign up success!",
+            toastLength: Toast.LENGTH_SHORT,
+            gravity: ToastGravity.BOTTOM,
+            timeInSecForIosWeb: 1,
+            backgroundColor: Colors.white,
+            textColor: Colors.black,
+            fontSize: 16.0);
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) => const LoginScreen(),
+          ),
+        );
+      },
+    );
+
+    // set up the AlertDialog
+    AlertDialog alert = AlertDialog(
+      title: const Text("Verfication"),
+      content: const Text(
+          "Please activate your account through your mailbox to sign in!"),
+      actions: [
+        okButton,
+      ],
+    );
+
+    // show the dialog
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return alert;
+      },
+    );
   }
 }

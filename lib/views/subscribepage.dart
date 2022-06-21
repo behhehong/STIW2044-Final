@@ -10,14 +10,14 @@ class SubscribePage extends StatefulWidget {
 class _SubscribePageState extends State<SubscribePage> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Subscribe'),
-        backgroundColor: const Color.fromARGB(255, 9, 56, 95),
-        centerTitle: true,
-      ),
-      body: Center(
-        child: Container(
+    return SafeArea(
+      child: Scaffold(
+        appBar: AppBar(
+          title: const Text('Subscribe'),
+          backgroundColor: const Color.fromARGB(255, 9, 56, 95),
+          centerTitle: true,
+        ),
+        body: const Center(
           child: Text('Subscribe'),
         ),
       ),

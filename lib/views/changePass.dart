@@ -1,7 +1,3 @@
-import 'dart:convert';
-
-import 'package:flutter/src/foundation/key.dart';
-import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as http;
@@ -31,7 +27,7 @@ class _ChangePassState extends State<ChangePass> {
 
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Color.fromARGB(255, 9, 56, 95),
+        backgroundColor: const Color.fromARGB(255, 9, 56, 95),
         title: const Text("Change Password",
             style: TextStyle(fontFamily: 'Arial')),
       ),
@@ -86,12 +82,12 @@ class _ChangePassState extends State<ChangePass> {
                                             color: Theme.of(context)
                                                 .colorScheme
                                                 .secondary)),
-                                    icon: Icon(
+                                    icon: const Icon(
                                       Icons.lock,
                                       color: Color.fromARGB(255, 9, 56, 95),
                                     ),
                                     labelText: 'Current Password',
-                                    labelStyle: TextStyle(
+                                    labelStyle: const TextStyle(
                                         fontSize: 18,
                                         fontFamily: 'Calibri',
                                         color: Color.fromARGB(255, 9, 56, 95)),
@@ -105,10 +101,11 @@ class _ChangePassState extends State<ChangePass> {
                                             hiddenPassword1
                                                 ? Icons.visibility_off
                                                 : Icons.visibility,
-                                            color: Color.fromARGB(255, 9, 56, 95)))),
+                                            color: const Color.fromARGB(
+                                                255, 9, 56, 95)))),
                                 obscureText: hiddenPassword1,
                               ),
-                              SizedBox(height: 20),
+                              const SizedBox(height: 20),
                               TextField(
                                 controller: _newpasswordController,
                                 decoration: InputDecoration(
@@ -117,12 +114,12 @@ class _ChangePassState extends State<ChangePass> {
                                             color: Theme.of(context)
                                                 .colorScheme
                                                 .secondary)),
-                                    icon: Icon(
+                                    icon: const Icon(
                                       Icons.lock,
                                       color: Color.fromARGB(255, 9, 56, 95),
                                     ),
                                     labelText: 'New Password',
-                                    labelStyle: TextStyle(
+                                    labelStyle: const TextStyle(
                                         fontSize: 18,
                                         fontFamily: 'Calibri',
                                         color: Color.fromARGB(255, 9, 56, 95)),
@@ -136,7 +133,8 @@ class _ChangePassState extends State<ChangePass> {
                                             hiddenPassword2
                                                 ? Icons.visibility_off
                                                 : Icons.visibility,
-                                            color: Color.fromARGB(255, 9, 56, 95)))),
+                                            color: const Color.fromARGB(
+                                                255, 9, 56, 95)))),
                                 obscureText: hiddenPassword2,
                                 onChanged: (value) {
                                   setState(() {});
@@ -151,12 +149,12 @@ class _ChangePassState extends State<ChangePass> {
                                             color: Theme.of(context)
                                                 .colorScheme
                                                 .secondary)),
-                                    icon: Icon(
+                                    icon: const Icon(
                                       Icons.lock,
                                       color: Color.fromARGB(255, 9, 56, 95),
                                     ),
                                     labelText: 'Confirm Password',
-                                    labelStyle: TextStyle(
+                                    labelStyle: const TextStyle(
                                         fontSize: 18,
                                         fontFamily: 'Calibri',
                                         color: Color.fromARGB(255, 9, 56, 95)),
@@ -170,13 +168,14 @@ class _ChangePassState extends State<ChangePass> {
                                             hiddenPassword3
                                                 ? Icons.visibility_off
                                                 : Icons.visibility,
-                                            color: Color.fromARGB(255, 9, 56, 95)))),
+                                            color: const Color.fromARGB(
+                                                255, 9, 56, 95)))),
                                 obscureText: hiddenPassword3,
                                 onChanged: (value) {
                                   setState(() {});
                                 },
                               ),
-                              SizedBox(height: 20),
+                              const SizedBox(height: 20),
                             ]),
                           ),
                         ),
@@ -319,7 +318,6 @@ class _ChangePassState extends State<ChangePass> {
             timeInSecForIosWeb: 1,
             fontSize: 16.0);
       }
-      print(response.body);
     });
   }
 }

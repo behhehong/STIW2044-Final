@@ -1,14 +1,13 @@
+// ignore_for_file: prefer_typing_uninitialized_variables
+
 import 'dart:convert';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:my_tutor/models/subject.dart';
 import 'package:my_tutor/models/tutor.dart';
 
-import '../models/user.dart';
 import 'package:http/http.dart' as http;
-import 'package:fluttertoast/fluttertoast.dart';
 
 class TutorPage extends StatefulWidget {
   const TutorPage({Key? key}) : super(key: key);
@@ -22,14 +21,15 @@ class _TutorPageState extends State<TutorPage> {
   String titlecenter = "Loading data...";
   final df = DateFormat('dd/MM/yyyy hh:mm a');
   late double screenHeight, screenWidth, resWidth;
-  var _tapPosition;
   var numofpage, curpage = 1;
   var color;
+  TextEditingController searchController = TextEditingController();
+  String search = "";
 
   @override
   void initState() {
     super.initState();
-    _loadTutors(1);
+    _loadTutors(1, search);
   }
 
   @override
@@ -43,108 +43,113 @@ class _TutorPageState extends State<TutorPage> {
       resWidth = screenWidth * 0.75;
       //rowcount = 3;
     }
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Tutors'),
-        backgroundColor: const Color.fromARGB(255, 9, 56, 95),
-        centerTitle: true,
-        actions: [
-          IconButton(
-            onPressed: () {
-              // Navigator.push(
-              //   context,
-              //   MaterialPageRoute(
-              //     builder: (context) => Settings(user: widget.user),
-              //   ),
-              // );
-            },
-            icon: const Icon(Icons.search),
-          )
-        ],
-      ),
-      body: tutorList.isEmpty
-          ? Center(
-              child: Text(
-                titlecenter,
-                style: (TextStyle(fontSize: 22, fontWeight: FontWeight.bold)),
-              ),
+    return SafeArea(
+      child: Scaffold(
+        appBar: AppBar(
+          title: const Text('Tutors'),
+          backgroundColor: const Color.fromARGB(255, 9, 56, 95),
+          centerTitle: true,
+          actions: [
+            IconButton(
+              onPressed: () {
+                _loadSearchDialog();
+              },
+              icon: const Icon(Icons.search),
             )
-          : Column(
-              children: [
-                const Padding(
-                  padding: EdgeInsets.all(8.0),
+          ],
+        ),
+        body: tutorList.isEmpty
+            ? Center(
+                child: Text(
+                  titlecenter,
+                  style: (const TextStyle(
+                      fontSize: 22, fontWeight: FontWeight.bold)),
                 ),
-                Expanded(
-                  child: GridView.count(
-                    crossAxisCount: 2,
-                    children: List.generate(
-                      tutorList.length,
-                      (index) {
-                        return InkWell(
-                          splashColor: Colors.amber,
-                          onTap: () => {_loadTutorDetails(index)},
-                          child: Card(
-                              child: Column(children: [
-                            Flexible(
-                                flex: 7,
-                                child: CachedNetworkImage(
-                                    imageUrl:
-                                        "https://hubbuddies.com/271513/myTutor/assets/tutors/" +
-                                            tutorList[index]
-                                                .tutor_id
-                                                .toString() +
-                                            '.jpg',
-                                    fit: BoxFit.cover,
-                                    width: resWidth)),
-                            const SizedBox(height: 5),
-                            Flexible(
-                              flex: 3,
-                              child: Column(children: [
-                                Text(tutorList[index].tutor_name.toString(),
-                                    style: TextStyle(fontSize: 15),
-                                    textAlign: TextAlign.center)
-                              ]),
-                            ),
-                          ])),
-                        );
-                      },
+              )
+            : Container(
+                decoration: const BoxDecoration(
+                    color: Color.fromARGB(255, 244, 243, 238)),
+                child: Column(
+                  children: [
+                    const Padding(
+                      padding: EdgeInsets.all(8.0),
                     ),
-                  ),
-                ),
-                SizedBox(
-                    height: 30,
-                    child: ListView.builder(
-                        shrinkWrap: true,
-                        itemCount: numofpage,
-                        scrollDirection: Axis.horizontal,
-                        itemBuilder: (context, index) {
-                          if ((curpage - 1) == index) {
-                            color = Colors.red;
-                          } else {
-                            color = Colors.black;
-                          }
-                          return SizedBox(
-                              width: 40,
-                              child: TextButton(
-                                onPressed: () => {_loadTutors(index + 1)},
-                                child: Text(
-                                  (index + 1).toString(),
-                                  style: TextStyle(color: color),
+                    Expanded(
+                      child: GridView.count(
+                        crossAxisCount: 2,
+                        children: List.generate(
+                          tutorList.length,
+                          (index) {
+                            return InkWell(
+                              onTap: () => {_loadTutorDetails(index)},
+                              child: Card(
+                                  child: Column(children: [
+                                Flexible(
+                                    flex: 7,
+                                    child: CachedNetworkImage(
+                                        imageUrl:
+                                            "https://hubbuddies.com/271513/myTutor/assets/tutors/" +
+                                                tutorList[index]
+                                                    .tutor_id
+                                                    .toString() +
+                                                '.jpg',
+                                        fit: BoxFit.cover,
+                                        width: resWidth,
+                                        height: screenHeight)),
+                                const SizedBox(height: 5),
+                                Flexible(
+                                  flex: 3,
+                                  child: Column(children: [
+                                    Text(tutorList[index].tutor_name.toString(),
+                                        style: const TextStyle(fontSize: 15),
+                                        textAlign: TextAlign.center)
+                                  ]),
                                 ),
-                              ));
-                        }))
-              ],
-            ),
+                              ])),
+                            );
+                          },
+                        ),
+                      ),
+                    ),
+                    SizedBox(
+                        height: 30,
+                        child: ListView.builder(
+                            shrinkWrap: true,
+                            itemCount: numofpage,
+                            scrollDirection: Axis.horizontal,
+                            itemBuilder: (context, index) {
+                              if ((curpage - 1) == index) {
+                                color = const Color.fromARGB(255, 219, 80, 74);
+                              } else {
+                                color = Colors.black;
+                              }
+                              return SizedBox(
+                                  width: 40,
+                                  child: TextButton(
+                                    onPressed: () =>
+                                        {_loadTutors(index + 1, search)},
+                                    child: Text(
+                                      (index + 1).toString(),
+                                      style: TextStyle(color: color),
+                                    ),
+                                  ));
+                            }))
+                  ],
+                ),
+              ),
+      ),
     );
   }
 
-  void _loadTutors(int pageno) {
+  void _loadTutors(int pageno, String search) {
     curpage = pageno;
     numofpage ?? 1;
     http.post(
         Uri.parse("https://hubbuddies.com/271513/myTutor/php/load_tutors.php"),
-        body: {'pageno': pageno.toString()}).then((response) {
-      print(response.body);
+        body: {
+          'pageno': pageno.toString(),
+          'search': search,
+        }).then((response) {
       var jsondata = jsonDecode(response.body);
       if (response.statusCode == 200 && jsondata['status'] == 'success') {
         var extractdata = jsondata['data'];
@@ -197,53 +202,67 @@ class _TutorPageState extends State<TutorPage> {
                 ),
                 Text(
                   tutorList[index].tutor_name.toString(),
+                  textAlign: TextAlign.center,
                   style: const TextStyle(
                       fontSize: 18, fontWeight: FontWeight.bold),
                 ),
                 const SizedBox(height: 10),
                 Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                  Text("Tutor Description: ",
+                  const Text("Tutor Description: ",
                       style:
                           TextStyle(fontWeight: FontWeight.bold, fontSize: 15)),
                   Text(tutorList[index].tutor_description.toString(),
-                      style: TextStyle(fontSize: 15)),
+                      style: const TextStyle(
+                          fontSize: 15,
+                          color: Color.fromARGB(255, 98, 144, 195))),
                   const SizedBox(height: 5),
                   Row(
                     children: [
-                      Text("Email: ",
+                      const Text("Email: ",
                           style: TextStyle(
                               fontWeight: FontWeight.bold, fontSize: 15)),
                       Text(
                         tutorList[index].tutor_email.toString(),
-                        style: TextStyle(fontSize: 15),
+                        style: const TextStyle(
+                            fontSize: 15,
+                            color: Color.fromARGB(255, 98, 144, 195)),
                       ),
                     ],
                   ),
                   const SizedBox(height: 5),
-
-                  // Text("Tutor: " +
-                  //     productList[index].productQty.toString() +
-                  //     " units"),
                   Row(
                     children: [
-                      Text("Phone: ",
+                      const Text("Phone: ",
                           style: TextStyle(
                               fontWeight: FontWeight.bold, fontSize: 15)),
                       Text(tutorList[index].tutor_phone.toString(),
-                          style: TextStyle(fontSize: 15)),
+                          style: const TextStyle(
+                              fontSize: 15,
+                              color: Color.fromARGB(255, 98, 144, 195))),
                     ],
                   ),
                   const SizedBox(height: 5),
                   Row(
                     children: [
-                      Text("Date Register: ",
+                      const Text("Subject Teach: ",
                           style: TextStyle(
                               fontSize: 15, fontWeight: FontWeight.bold)),
-                      Text(
-                          df.format(DateTime.parse(
-                              tutorList[index].tutor_datereg.toString())),
-                          style: TextStyle(fontSize: 15))
+                      Expanded(
+                        child: Text(tutorList[index].subject_name.toString(),
+                            style: const TextStyle(
+                                fontSize: 15,
+                                color: Color.fromARGB(255, 98, 144, 195))),
+                      )
                     ],
+                  ),
+                  const SizedBox(height: 20),
+                  Align(
+                    alignment: Alignment.bottomCenter,
+                    child: Text(
+                        df.format(DateTime.parse(
+                            tutorList[index].tutor_datereg.toString())),
+                        style:
+                            const TextStyle(fontSize: 15, color: Colors.black)),
                   ),
                 ])
               ],
@@ -259,6 +278,58 @@ class _TutorPageState extends State<TutorPage> {
                 },
               ),
             ],
+          );
+        });
+  }
+
+  void _loadSearchDialog() {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          // return object of type Dialog
+          return AlertDialog(
+            shape: const RoundedRectangleBorder(
+                borderRadius: BorderRadius.all(Radius.circular(5.0))),
+            title: const Text(
+              "Search",
+            ),
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                TextField(
+                  controller: searchController,
+                  decoration: InputDecoration(
+                    hintText: 'Enter the name of tutor',
+                    // focusedBorder: UnderlineInputBorder(
+                    //  borderSide: BorderSide(color: Colors.redAccent),
+                    // ),
+                    suffixIcon: IconButton(
+                      icon: const Icon(Icons.close),
+                      onPressed: searchController.clear,
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 20),
+                Align(
+                  alignment: Alignment.bottomRight,
+                  child: ElevatedButton(
+                    onPressed: () {
+                      search = searchController.text;
+                      Navigator.of(context).pop();
+                      _loadTutors(1, search);
+                    },
+                    style: ElevatedButton.styleFrom(
+                      primary: const Color.fromARGB(255, 9, 56, 95),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(5.0),
+                      ),
+                    ),
+                    child: const Text("Search",
+                        style: TextStyle(color: Colors.white)),
+                  ),
+                ),
+              ],
+            ),
           );
         });
   }

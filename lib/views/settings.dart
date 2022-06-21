@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:my_tutor/models/user.dart';
-import 'package:my_tutor/views/changePass.dart';
+import 'package:my_tutor/views/changepass.dart';
 import 'package:my_tutor/views/loginscreen.dart';
 
 class Settings extends StatefulWidget {
@@ -17,9 +17,9 @@ class _SettingsState extends State<Settings> {
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
-          title: Text('Settings'),
+          title: const Text('Settings'),
           centerTitle: true,
-          backgroundColor: Color.fromARGB(255, 9, 56, 95),
+          backgroundColor: const Color.fromARGB(255, 9, 56, 95),
           elevation: 0,
         ),
         body: Center(
@@ -34,12 +34,12 @@ class _SettingsState extends State<Settings> {
                   child: Container(
                       height: 60,
                       width: MediaQuery.of(context).size.width,
-                      decoration: BoxDecoration(color: Colors.white),
+                      decoration: const BoxDecoration(color: Colors.white),
                       child: Padding(
                         padding: const EdgeInsets.all(10.0),
-                        child: Row(children: [
+                        child: Row(children: const [
                           Icon(Icons.lock),
-                          const SizedBox(width: 10),
+                          SizedBox(width: 10),
                           Text(
                             "Change Password",
                             style: TextStyle(fontSize: 15),
@@ -57,13 +57,16 @@ class _SettingsState extends State<Settings> {
                 ),
                 const SizedBox(height: 10),
                 GestureDetector(
+                  onTap: () {
+                    logOut(context);
+                  },
                   child: Container(
                       height: 60,
                       width: MediaQuery.of(context).size.width,
-                      decoration: BoxDecoration(color: Colors.white),
+                      decoration: const BoxDecoration(color: Colors.white),
                       child: Padding(
                         padding: const EdgeInsets.all(10.0),
-                        child: Row(children: [
+                        child: Row(children: const [
                           Icon(Icons.logout),
                           SizedBox(width: 10),
                           Text(
@@ -72,9 +75,6 @@ class _SettingsState extends State<Settings> {
                           )
                         ]),
                       )),
-                  onTap: () {
-                    logOut(context);
-                  },
                 ),
               ],
             ),
