@@ -300,9 +300,6 @@ class _TutorPageState extends State<TutorPage> {
                   controller: searchController,
                   decoration: InputDecoration(
                     hintText: 'Enter the name of tutor',
-                    // focusedBorder: UnderlineInputBorder(
-                    //  borderSide: BorderSide(color: Colors.redAccent),
-                    // ),
                     suffixIcon: IconButton(
                       icon: const Icon(Icons.close),
                       onPressed: searchController.clear,
