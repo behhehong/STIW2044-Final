@@ -244,7 +244,7 @@ class _TutorPageState extends State<TutorPage> {
                   const SizedBox(height: 5),
                   Row(
                     children: [
-                      const Text("Subject Teach: ",
+                      const Text("Subject Owned: ",
                           style: TextStyle(
                               fontSize: 15, fontWeight: FontWeight.bold)),
                       Expanded(
