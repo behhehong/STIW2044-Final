@@ -1,3 +1,5 @@
+// ignore_for_file: non_constant_identifier_names
+
 class Subject {
   String? subject_id;
   String? subject_name;

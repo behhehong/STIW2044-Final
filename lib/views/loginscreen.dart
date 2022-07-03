@@ -3,7 +3,6 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:my_tutor/models/user.dart';
-import 'package:my_tutor/views/changePass.dart';
 import 'package:my_tutor/views/mainpage.dart';
 import 'package:my_tutor/views/registrationscreen.dart';
 import 'package:http/http.dart' as http;
