@@ -49,14 +49,12 @@ class _TutorPageState extends State<TutorPage> {
           title: const Text('Tutors'),
           backgroundColor: const Color.fromARGB(255, 9, 56, 95),
           centerTitle: true,
-          actions: [
-            IconButton(
-              onPressed: () {
-                _loadSearchDialog();
-              },
-              icon: const Icon(Icons.search),
-            )
-          ],
+          leading: IconButton(
+            icon: Icon(Icons.search),
+            onPressed: () {
+              _loadSearchDialog();
+            },
+          ),
         ),
         body: tutorList.isEmpty
             ? Center(

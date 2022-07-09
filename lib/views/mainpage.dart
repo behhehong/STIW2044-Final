@@ -31,13 +31,11 @@ class _MainPageState extends State<MainPage> {
   void initState() {
     super.initState();
 
-    _page1 = const SubjectPage();
+    _page1 = SubjectPage(user: widget.user);
     _page2 = const TutorPage();
     _page3 = const SubscribePage();
     _page4 = const FavouritePage();
-    _page5 = Profile(
-      user: widget.user,
-    );
+    _page5 = Profile(user: widget.user);
     _pages = [_page1, _page2, _page3, _page4, _page5];
     _selectedIndex = 0;
     _currentPage = _page1;

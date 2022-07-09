@@ -1,15 +1,17 @@
-// ignore_for_file: prefer_typing_uninitialized_variables
-
 import 'dart:convert';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:my_tutor/models/subject.dart';
 
 import 'package:http/http.dart' as http;
+import 'package:my_tutor/models/user.dart';
+import 'package:my_tutor/views/cartscreen.dart';
 
 class SubjectPage extends StatefulWidget {
-  const SubjectPage({Key? key}) : super(key: key);
+  final User user;
+  const SubjectPage({Key? key, required this.user}) : super(key: key);
 
   @override
   State<SubjectPage> createState() => _SubjectPageState();
@@ -23,6 +25,7 @@ class _SubjectPageState extends State<SubjectPage> {
   var color;
   TextEditingController searchController = TextEditingController();
   String search = "";
+  int cart = 0;
 
   @override
   void initState() {
@@ -45,13 +48,28 @@ class _SubjectPageState extends State<SubjectPage> {
           title: const Text('Subjects'),
           backgroundColor: const Color.fromARGB(255, 9, 56, 95),
           centerTitle: true,
+          leading: IconButton(
+            icon: const Icon(Icons.search),
+            onPressed: () {
+              _loadSearchDialog();
+            },
+          ),
           actions: [
             IconButton(
-              onPressed: () {
-                _loadSearchDialog();
+              onPressed: () async {
+                await Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => CartScreen(user: widget.user),
+                  ),
+                );
+                searchController.clear();
+                search = searchController.text;
+                _loadSubjects(1, search);
+                // _loadMyCart();
               },
-              icon: const Icon(Icons.search),
-            )
+              icon: const Icon(Icons.shopping_cart),
+            ),
           ],
         ),
         body: subjectList.isEmpty
@@ -188,88 +206,111 @@ class _SubjectPageState extends State<SubjectPage> {
               style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
             ),
             content: SingleChildScrollView(
-                child: Column(
-              children: [
-                CachedNetworkImage(
-                  imageUrl:
-                      "https://hubbuddies.com/271513/myTutor/assets/courses/" +
-                          subjectList[index].subject_id.toString() +
-                          '.jpg',
-                  fit: BoxFit.cover,
-                  width: resWidth,
-                  placeholder: (context, url) =>
-                      const LinearProgressIndicator(),
-                  errorWidget: (context, url, error) => const Icon(Icons.error),
-                ),
-                Text(
-                  subjectList[index].subject_name.toString(),
-                  textAlign: TextAlign.center,
-                  style: const TextStyle(
-                      fontSize: 18, fontWeight: FontWeight.bold),
-                ),
-                const SizedBox(height: 10),
-                Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                  const Text("Subject Description: ",
-                      style:
-                          TextStyle(fontWeight: FontWeight.bold, fontSize: 15)),
-                  Text(subjectList[index].subject_description.toString(),
-                      style: const TextStyle(
-                          fontSize: 15,
-                          color: Color.fromARGB(255, 98, 144, 195))),
-                  const SizedBox(height: 5),
-                  Row(
-                    children: [
-                      const Text("Price: ",
-                          style: TextStyle(
-                              fontWeight: FontWeight.bold, fontSize: 15)),
-                      Text(
-                        "RM " +
-                            double.parse(
-                                    subjectList[index].subject_price.toString())
-                                .toStringAsFixed(2),
-                        style: const TextStyle(
-                            fontSize: 15,
-                            color: Color.fromARGB(255, 98, 144, 195)),
-                      ),
-                    ],
+              child: Column(
+                children: [
+                  CachedNetworkImage(
+                    imageUrl:
+                        "https://hubbuddies.com/271513/myTutor/assets/courses/" +
+                            subjectList[index].subject_id.toString() +
+                            '.jpg',
+                    fit: BoxFit.cover,
+                    width: resWidth,
+                    placeholder: (context, url) =>
+                        const LinearProgressIndicator(),
+                    errorWidget: (context, url, error) =>
+                        const Icon(Icons.error),
                   ),
-                  const SizedBox(height: 5),
-                  Row(
-                    children: [
-                      const Text("Subject Sessions: ",
-                          style: TextStyle(
-                              fontWeight: FontWeight.bold, fontSize: 15)),
-                      Text(subjectList[index].subject_sessions.toString(),
-                          style: const TextStyle(
-                              fontSize: 15,
-                              color: const Color.fromARGB(255, 98, 144, 195))),
-                    ],
+                  Text(
+                    subjectList[index].subject_name.toString(),
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(
+                        fontSize: 18, fontWeight: FontWeight.bold),
                   ),
-                  const SizedBox(height: 5),
-                  Row(
+                  const SizedBox(height: 10),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Text("Subject Rating: ",
+                      const Text("Subject Description: ",
                           style: TextStyle(
                               fontWeight: FontWeight.bold, fontSize: 15)),
-                      Text(subjectList[index].subject_rating.toString(),
+                      Text(subjectList[index].subject_description.toString(),
                           style: const TextStyle(
                               fontSize: 15,
                               color: Color.fromARGB(255, 98, 144, 195))),
+                      const SizedBox(height: 5),
+                      Row(
+                        children: [
+                          const Text("Price: ",
+                              style: TextStyle(
+                                  fontWeight: FontWeight.bold, fontSize: 15)),
+                          Text(
+                            "RM " +
+                                double.parse(subjectList[index]
+                                        .subject_price
+                                        .toString())
+                                    .toStringAsFixed(2),
+                            style: const TextStyle(
+                                fontSize: 15,
+                                color: Color.fromARGB(255, 98, 144, 195)),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 5),
+                      Row(
+                        children: [
+                          const Text("Subject Sessions: ",
+                              style: TextStyle(
+                                  fontWeight: FontWeight.bold, fontSize: 15)),
+                          Text(subjectList[index].subject_sessions.toString(),
+                              style: const TextStyle(
+                                  fontSize: 15,
+                                  color:
+                                      const Color.fromARGB(255, 98, 144, 195))),
+                        ],
+                      ),
+                      const SizedBox(height: 5),
+                      Row(
+                        children: [
+                          const Text("Subject Rating: ",
+                              style: TextStyle(
+                                  fontWeight: FontWeight.bold, fontSize: 15)),
+                          Text(subjectList[index].subject_rating.toString(),
+                              style: const TextStyle(
+                                  fontSize: 15,
+                                  color: Color.fromARGB(255, 98, 144, 195))),
+                        ],
+                      ),
                     ],
-                  ),
-                ])
-              ],
-            )),
-            actions: [
-              TextButton(
-                child: const Text(
-                  "Close",
-                  style: TextStyle(color: Color.fromARGB(255, 98, 144, 195)),
-                ),
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
+                  )
+                ],
               ),
+            ),
+            actions: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  TextButton(
+                    child: const Text(
+                      "Add to Cart",
+                      style:
+                          TextStyle(color: Color.fromARGB(255, 98, 144, 195)),
+                    ),
+                    onPressed: () {
+                      _addtocartDialog(index);
+                    },
+                  ),
+                  TextButton(
+                    child: const Text(
+                      "Close",
+                      style:
+                          TextStyle(color: Color.fromARGB(255, 98, 144, 195)),
+                    ),
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                  ),
+                ],
+              )
             ],
           );
         });
@@ -323,4 +364,136 @@ class _SubjectPageState extends State<SubjectPage> {
           );
         });
   }
+
+  void _addtocartDialog(index) {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          // return object of type Dialog
+          return AlertDialog(
+            insetPadding: EdgeInsets.all(70),
+            buttonPadding: EdgeInsets.all(0),
+            shape: const RoundedRectangleBorder(
+                borderRadius: BorderRadius.all(Radius.circular(10.0))),
+            title: const Text(
+              "Add to Cart",
+            ),
+            // contentPadding: EdgeInsets.all(20),
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text('Are you sure to add this item to cart?'),
+              ],
+            ),
+            actions: [
+              Container(
+                width: MediaQuery.of(context).size.width,
+                height: 45,
+                decoration: BoxDecoration(
+                  border: Border.all(color: Colors.grey),
+                  borderRadius: const BorderRadius.only(
+                      bottomLeft: Radius.circular(10),
+                      bottomRight: Radius.circular(10)),
+                ),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: GestureDetector(
+                        onTap: () {
+                          _addtoCart(index);
+                          Navigator.of(context).pop();
+                        },
+                        child: Container(
+                          alignment: Alignment.center,
+                          color: Color.fromARGB(255, 98, 144, 195),
+                          child: const Text(
+                            "Yes",
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 15,
+                              color: Colors.white,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                    Expanded(
+                      child: GestureDetector(
+                        onTap: () {
+                          Navigator.of(context).pop();
+                        },
+                        child: Container(
+                          alignment: Alignment.center,
+                          color: Colors.white,
+                          child: const Text(
+                            "No",
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 15,
+                              color: Color.fromARGB(255, 98, 144, 195),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          );
+        });
+  }
+
+  void _addtoCart(int index) {
+    http.post(
+        Uri.parse("https://hubbuddies.com/271513/myTutor/php/insert_cart.php"),
+        body: {
+          "email": widget.user.email.toString(),
+          "subjectid": subjectList[index].subject_id.toString(),
+        }).timeout(
+      const Duration(seconds: 5),
+      onTimeout: () {
+        return http.Response(
+            'Error', 408); // Request Timeout response status code
+      },
+    ).then((response) {
+      var jsondata = jsonDecode(response.body);
+      if (response.statusCode == 200 && jsondata['status'] == 'success') {
+        print(jsondata['data']['carttotal'].toString());
+        setState(() {
+          widget.user.cart = jsondata['data']['carttotal'].toString();
+        });
+        Fluttertoast.showToast(
+            msg: "Success",
+            toastLength: Toast.LENGTH_SHORT,
+            gravity: ToastGravity.BOTTOM,
+            timeInSecForIosWeb: 1,
+            fontSize: 16.0);
+      }
+    });
+  }
+
+  // void _loadMyCart() {
+  //   http.post(
+  //       Uri.parse(
+  //           "https://hubbuddies.com/271513/myTutor/php/load_mycartqty.php"),
+  //       body: {
+  //         "email": widget.user.email.toString(),
+  //       }).timeout(
+  //     const Duration(seconds: 5),
+  //     onTimeout: () {
+  //       return http.Response(
+  //           'Error', 408); // Request Timeout response status code
+  //     },
+  //   ).then((response) {
+  //     print(response.body);
+  //     var jsondata = jsonDecode(response.body);
+  //     if (response.statusCode == 200 && jsondata['status'] == 'success') {
+  //       print(jsondata['data']['carttotal'].toString());
+  //       setState(() {
+  //         widget.user.cart = jsondata['data']['carttotal'].toString();
+  //       });
+  //     }
+  //   });
+  // }
 }
