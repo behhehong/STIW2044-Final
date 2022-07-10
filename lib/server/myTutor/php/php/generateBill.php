@@ -3,7 +3,7 @@ error_reporting(0);
 
 $email = $_GET['email'];
 $name = $_GET['name']; 
-$phone = $_GET['phone']; 
+$mobile = $_GET['mobile']; 
 $amount = $_GET['amount'];
 $status="Order Confirmed";
 
@@ -16,10 +16,10 @@ $data = array(
     'collection_id' => $collection_id,
     'email' => $email,
     'name'=> $name,
-    'phone'=> $phone,
+    'mobile'=> $mobile,
     'amount'=> $amount*100,
     'callback_url'=>"https://hubbuddies.com/271513/myTutor/php/return_url",
-    'redirect_url'=>"https://hubbuddies.com/271513/myTutor/php/payment_update.php?email=$email&name=$name&phone=$phone&amount=$amount&status=$status",
+    'redirect_url'=>"https://hubbuddies.com/271513/myTutor/php/payment_update.php?email=$email&name=$name&mobile=$mobile&amount=$amount&status=$status",
     'description' => 'Payment for order by '.$name,
     );
     
