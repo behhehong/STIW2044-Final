@@ -32,7 +32,7 @@ class _MainPageState extends State<MainPage> {
     super.initState();
 
     _page1 = SubjectPage(user: widget.user);
-    _page2 = const TutorPage();
+    _page2 = TutorPage(user: widget.user);
     _page3 = const SubscribePage();
     _page4 = const FavouritePage();
     _page5 = Profile(user: widget.user);

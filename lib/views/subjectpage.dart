@@ -6,6 +6,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:my_tutor/models/subject.dart';
 
 import 'package:http/http.dart' as http;
+import 'package:my_tutor/models/subscribe.dart';
 import 'package:my_tutor/models/user.dart';
 import 'package:my_tutor/views/cartscreen.dart';
 
@@ -19,6 +20,7 @@ class SubjectPage extends StatefulWidget {
 
 class _SubjectPageState extends State<SubjectPage> {
   List<Subject> subjectList = <Subject>[];
+  // List<Subscribe> subscribe = <Subscribe>[];
   String titlecenter = "Loading data...";
   late double screenHeight, screenWidth, resWidth;
   var numofpage, curpage = 1;
@@ -26,6 +28,7 @@ class _SubjectPageState extends State<SubjectPage> {
   TextEditingController searchController = TextEditingController();
   String search = "";
   int cart = 0;
+  String subscription = '';
 
   @override
   void initState() {
@@ -66,7 +69,6 @@ class _SubjectPageState extends State<SubjectPage> {
                 searchController.clear();
                 search = searchController.text;
                 _loadSubjects(1, search);
-                // _loadMyCart();
               },
               icon: const Icon(Icons.shopping_cart),
             ),
@@ -300,6 +302,16 @@ class _SubjectPageState extends State<SubjectPage> {
                     },
                   ),
                   TextButton(
+                    child: Text(
+                      subscription,
+                      style:
+                          TextStyle(color: Color.fromARGB(255, 98, 144, 195)),
+                    ),
+                    onPressed: () {
+                      // _addtocartDialog(index);
+                    },
+                  ),
+                  TextButton(
                     child: const Text(
                       "Close",
                       style:
@@ -472,28 +484,4 @@ class _SubjectPageState extends State<SubjectPage> {
       }
     });
   }
-
-  // void _loadMyCart() {
-  //   http.post(
-  //       Uri.parse(
-  //           "https://hubbuddies.com/271513/myTutor/php/load_mycartqty.php"),
-  //       body: {
-  //         "email": widget.user.email.toString(),
-  //       }).timeout(
-  //     const Duration(seconds: 5),
-  //     onTimeout: () {
-  //       return http.Response(
-  //           'Error', 408); // Request Timeout response status code
-  //     },
-  //   ).then((response) {
-  //     print(response.body);
-  //     var jsondata = jsonDecode(response.body);
-  //     if (response.statusCode == 200 && jsondata['status'] == 'success') {
-  //       print(jsondata['data']['carttotal'].toString());
-  //       setState(() {
-  //         widget.user.cart = jsondata['data']['carttotal'].toString();
-  //       });
-  //     }
-  //   });
-  // }
 }

@@ -3,14 +3,18 @@
 import 'dart:convert';
 
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:favorite_button/favorite_button.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:intl/intl.dart';
 import 'package:my_tutor/models/tutor.dart';
 
 import 'package:http/http.dart' as http;
+import 'package:my_tutor/models/user.dart';
 
 class TutorPage extends StatefulWidget {
-  const TutorPage({Key? key}) : super(key: key);
+  final User user;
+  TutorPage({Key? key, required this.user}) : super(key: key);
 
   @override
   State<TutorPage> createState() => _TutorPageState();
@@ -78,32 +82,40 @@ class _TutorPageState extends State<TutorPage> {
                         children: List.generate(
                           tutorList.length,
                           (index) {
-                            return InkWell(
-                              onTap: () => {_loadTutorDetails(index)},
-                              child: Card(
-                                  child: Column(children: [
-                                Flexible(
-                                    flex: 7,
-                                    child: CachedNetworkImage(
-                                        imageUrl:
-                                            "https://hubbuddies.com/271513/myTutor/assets/tutors/" +
-                                                tutorList[index]
-                                                    .tutor_id
-                                                    .toString() +
-                                                '.jpg',
-                                        fit: BoxFit.cover,
-                                        width: resWidth,
-                                        height: screenHeight)),
-                                const SizedBox(height: 5),
-                                Flexible(
-                                  flex: 3,
-                                  child: Column(children: [
-                                    Text(tutorList[index].tutor_name.toString(),
-                                        style: const TextStyle(fontSize: 15),
-                                        textAlign: TextAlign.center)
-                                  ]),
+                            return Stack(
+                              children: [
+                                InkWell(
+                                  onTap: () => {_loadTutorDetails(index)},
+                                  child: Card(
+                                      child: Column(children: [
+                                    Flexible(
+                                        flex: 7,
+                                        child: CachedNetworkImage(
+                                            imageUrl:
+                                                "https://hubbuddies.com/271513/myTutor/assets/tutors/" +
+                                                    tutorList[index]
+                                                        .tutor_id
+                                                        .toString() +
+                                                    '.jpg',
+                                            fit: BoxFit.cover,
+                                            width: resWidth,
+                                            height: screenHeight)),
+                                    const SizedBox(height: 5),
+                                    Flexible(
+                                      flex: 3,
+                                      child: Column(children: [
+                                        Text(
+                                            tutorList[index]
+                                                .tutor_name
+                                                .toString(),
+                                            style:
+                                                const TextStyle(fontSize: 15),
+                                            textAlign: TextAlign.center)
+                                      ]),
+                                    ),
+                                  ])),
                                 ),
-                              ])),
+                              ],
                             );
                           },
                         ),

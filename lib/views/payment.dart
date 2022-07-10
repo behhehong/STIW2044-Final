@@ -22,13 +22,11 @@ class _PaymentState extends State<Payment> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        // leading: IconButton(
-        //     icon: Icon(Icons.arrow_back_outlined),
-        //     onPressed: () {
-        //       backhomepage();
-        //     }),
-        title: Text('Payment'),
-      ),
+          title: const Text('Payment'),
+          centerTitle: true,
+          backgroundColor: const Color.fromARGB(255, 9, 56, 95),
+          elevation: 0,
+        ),
       body: Center(
         child: Container(
           child: Column(
@@ -40,7 +38,7 @@ class _PaymentState extends State<Payment> {
                           widget.user.email.toString() +
                           '&name=' +
                           widget.user.username.toString() +
-                          '&phone=' +
+                          '&mobile=' +
                           widget.user.phoneNum.toString() +
                           '&amount=' +
                           widget.totalamount.toString(),

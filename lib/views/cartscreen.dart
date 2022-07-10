@@ -30,6 +30,7 @@ class _CartScreenState extends State<CartScreen> {
   bool overall = false;
   List<String> pricearray = <String>[];
   List<String> perunit = <String>[];
+  double totalprice = 0.0;
 
   @override
   void initState() {
@@ -160,11 +161,11 @@ class _CartScreenState extends State<CartScreen> {
                                       ],
                                     ),
                                   ),
-                                  Align(
-                                    alignment: Alignment.topLeft,
-                                    child: InkWell(
-                                        child: _checkboxCondition(index)),
-                                  )
+                                  // Align(
+                                  //   alignment: Alignment.topLeft,
+                                  //   child: InkWell(
+                                  //       child: _checkboxCondition(index)),
+                                  // )
                                 ],
                               );
                             },
@@ -190,33 +191,34 @@ class _CartScreenState extends State<CartScreen> {
                                       const EdgeInsets.fromLTRB(0, 0, 8, 0),
                                   child: Row(
                                     mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
+                                        MainAxisAlignment.center,
                                     children: [
-                                      Row(
-                                        children: [
-                                          Checkbox(
-                                            value: overall,
-                                            onChanged: (value) {
-                                              setState(() {
-                                                overall = value!;
-                                                if (overall == true) {
-                                                  totalamount = totalpayable;
-                                                  print(totalamount);
-                                                } else {
-                                                  totalamount = 0.0;
-                                                }
-                                              });
-                                            },
-                                          ),
-                                          Text(
-                                            "All ",
-                                            style: TextStyle(
-                                                fontWeight: FontWeight.bold,
-                                                fontSize: 15,
-                                                color: Colors.black),
-                                          ),
-                                        ],
-                                      ),
+                                      // Row(
+                                      //   children: [
+                                      //     Checkbox(
+                                      //       value: overall,
+                                      //       onChanged: (value) {
+                                      //         setState(() {
+                                      //           overall = value!;
+                                      //           if (overall == true) {
+                                      //             totalamount = totalpayable;
+                                      //             print(totalamount);
+                                      //           } else {
+                                      //             totalamount = 0.0;
+                                      //             values[index] = false;
+                                      //           }
+                                      //         });
+                                      //       },
+                                      //     ),
+                                      //     Text(
+                                      //       "All ",
+                                      //       style: TextStyle(
+                                      //           fontWeight: FontWeight.bold,
+                                      //           fontSize: 15,
+                                      //           color: Colors.black),
+                                      //     ),
+                                      //   ],
+                                      // ),
                                       Row(
                                         children: [
                                           Text(
@@ -319,15 +321,16 @@ class _CartScreenState extends State<CartScreen> {
                 totalpayable + double.parse(element.pricetotal.toString());
           }
           titlecenter = qty.toString() + " Products in your cart";
-          for (var i = 0; i < cartList.length; i++) {
-            values.add(false);
-          }
-          for (var i = 0; i < cartList.length; i++) {
-            pricearray.add("0");
-          }
-          if (overall == true) {
-            totalamount = totalpayable;
-          }
+          // for (var i = 0; i < cartList.length; i++) {
+          //   values.add(false);
+          // }
+          // for (var i = 0; i < cartList.length; i++) {
+          //   pricearray.add("0");
+          // }
+          // if (overall == true) {
+          //   totalamount = totalpayable;
+          // }
+          totalamount = totalpayable;
           setState(() {});
         }
       } else {
@@ -473,38 +476,51 @@ class _CartScreenState extends State<CartScreen> {
         });
   }
 
-  _checkboxCondition(int index) {
-    if (overall == true) {
-      return Checkbox(
-        value: overall,
-        onChanged: (value) {
-          setState(() {
-            overall = value!;
-            if (overall == false) {
-              totalamount = 0.0;
-            }
-          });
-        },
-      );
-    } else if (overall == false) {
-      return Checkbox(
-        value: values[index],
-        onChanged: (value) {
-          setState(() {
-            values[index] = value!;
-            if (values[index] == true) {
-              var price = cartList[index].subject_price;
-              pricearray[index] = price!;
-              print(pricearray);
-            } else {
-              pricearray[index] = "0";
-              print(pricearray);
-            }
-          });
-        },
-      );
-    }
-  }
+  // _checkboxCondition(int index) {
+  //   if (overall == true) {
+  //     return Checkbox(
+  //       value: overall,
+  //       onChanged: (value) {
+  //         setState(() {
+  //           overall = value!;
+  //           if (overall == false) {
+  //             totalamount = 0.0;
+  //           }
+  //         });
+  //       },
+  //     );
+  //   } else if (overall == false) {
+  //     return Checkbox(
+  //       value: values[index],
+  //       onChanged: (value) {
+  //         setState(() {
+  //           values[index] = value!;
+  //           value = false;
+  //           if (values[index] == true) {
+  //             var price = cartList[index].subject_price;
+  //             pricearray[index] = price!;
+  //             totalprice = 0.0;
+  //             pricearray[index] = cartList[index].pricetotal!;
+  //             for (var i = 0; i < cartList.length; i++) {
+  //               totalprice = totalprice + double.parse(pricearray[i]);
+  //             }
+  //             print(pricearray);
+  //             print(totalprice);
+  //           } else {
+  //             pricearray[index] = "0";
+  //             totalprice = 0.0;
+  //             for (var i = 0; i < cartList.length; i++) {
+  //               totalprice = totalprice + double.parse(pricearray[i]);
+  //             }
+  //             print(pricearray);
+  //             print(totalprice);
+  //           }
+  //           totalamount = totalprice;
+  //         });
+  //       },
+  //     );
+  //   }
+  // }
 
   void _onPaynowDialog() {
     showDialog(
